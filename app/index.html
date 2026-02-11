@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent Portal</title>
+  <style>
+    :root {
+      --bg: #0b0b0b;
+      --bg-accent: #111;
+      --card: #1a1a1a;
+      --text: #ffffff;
+      --muted: #aaaaaa;
+      --border: #333;
+      --accent: #ef4444;
+      --accent-2: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      background: rgba(20, 20, 20, 0.9);
+      border-bottom: 1px solid var(--border);
+      z-index: 50;
+      backdrop-filter: blur(6px);
+      padding: 1rem 0;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .btn {
+      background: var(--accent-2);
+      color: #fff;
+      border: 0;
+      border-radius: 10px;
+      padding: 0.9rem 1.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn:hover { background: var(--accent); transform: translateY(-1px); }
+    .btn.secondary {
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      color: #fff;
+    }
+
+    main { padding: 2rem 1rem 4rem; }
+
+    .header-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #111;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem 2rem;
+      margin-bottom: 1.5rem;
+      gap: 1rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      color: white;
+      font-size: 2rem;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .header-tagline {
+      color: var(--muted);
+      margin: .35rem 0 0;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      text-align: left;
+      padding: .8rem;
+      border-bottom: 1px solid var(--border);
+      background: #1a1a1a;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tbody td {
+      padding: .8rem;
+      border-bottom: 1px dashed var(--border);
+      color: #fff;
+    }
+
+    tbody a.client-link {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    tbody a.client-link:hover {
+      text-decoration: underline;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .warn {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .muted { color: var(--muted); }
+
+    @media (max-width: 768px) {
+      .header-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      .nav {
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <header>
+    <div class="container">
+      <div class="nav">
+        <button class="btn" id="createClientBtn">Create Client</button>
+        <a class="btn secondary" id="openSheetBtn" href="#" target="_blank" rel="noreferrer">
+          Open Responses Sheet
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Header banner -->
+    <div class="header-banner">
+      <div class="header-left">
+        <span class="dot"></span>
+        <div>
+          <h1 class="header-title">Agent Portal</h1>
+          <p class="header-tagline">Client intake + prefilled downstream forms for marketing pack automation</p>
+        </div>
+      </div>
+
+      <span class="pill">Demo / Sanitized Version</span>
+    </div>
+
+    <div class="warn" id="configWarning" style="display:none;">
+      <strong>Setup needed:</strong> This repo uses placeholder links. Update the config values in the script section to connect your own
+      Google Apps Script endpoint, Forms, and Sheet.
+    </div>
+
+    <p style="color: white; font-size: 1rem; margin-bottom: 1.5rem;">
+      Welcome to the <strong>Agent Portal</strong>. Create new client records, search existing submissions, and launch prefilled forms
+      for downstream steps (e.g., Marketing, Appraisal, Vendor Report) using a shared Property/Client ID.
+    </p>
+
+    <!-- Client Table -->
+    <div class="card" id="clientsView">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;">
+        <h2 style="margin:0;">Existing Clients</h2>
+        <div class="search" style="display:flex; gap:.6rem; align-items:center; flex-wrap:wrap;">
+          <input type="search" id="searchBox" placeholder="Search name, email, phone..." style="padding:.6rem; border-radius:8px; border:1px solid var(--border); background:#111; color:#fff;">
+          <button class="btn secondary" id="refreshBtn">Refresh</button>
+        </div>
+      </div>
+
+      <div style="overflow:auto; max-height: 550px; margin-top:1rem;">
+        <table id="clientsTable">
+          <thead>
+            <tr>
+              <th>Submitted</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Property Address</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <p class="muted" id="emptyState" style="display:none;">No clients yet.</p>
+    </div>
+
+    <!-- Client Detail View -->
+    <div class="card" id="clientDetailView" style="display:none;">
+      <h2 id="clientDetailName" style="margin-top:0;">Client Details</h2>
+      <p class="muted" id="clientDetailMeta"></p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1rem;">
+        <div class="card" style="background:#111;">
+          <h3>Marketing</h3>
+          <button class="btn" id="openMarketingFormBtn">Open</button>
+        </div>
+
+        <div class="card" style="background:#111;">
+          <h3>Appraisal</h3>
+          <button class="btn" id="openAppraisalFormBtn">Open</button>
+        </div>
+
+        <div class="card" style="background:#111;">
+          <h3>Vendor Report</h3>
+          <button class="btn" id="openVendorFormBtn">Open</button>
+        </div>
+      </div>
+
+      <button class="btn secondary" id="backToListBtn" style="margin-top:1rem;">Back to List</button>
+    </div>
+  </main>
+
+  <script>
+   
+    const CONFIG = {
+      API_ENDPOINT: "REPLACE_WITH_APPS_SCRIPT_WEB_APP_URL",
+      RESPONSES_SHEET_URL: "REPLACE_WITH_GOOGLE_SHEET_URL",
+      CREATE_CLIENT_FORM_URL: "REPLACE_WITH_CREATE_CLIENT_FORM_URL",
+      MARKETING_FORM_BASE: "REPLACE_WITH_MARKETING_FORM_PREFILL_BASE_URL",
+      APPRAISAL_FORM_BASE: "REPLACE_WITH_APPRAISAL_FORM_PREFILL_BASE_URL",
+      VENDOR_FORM_BASE: "REPLACE_WITH_VENDOR_FORM_PREFILL_BASE_URL"
+    };
+
+    // UI elements
+    const tableBody = document.querySelector("#clientsTable tbody");
+    const searchBox = document.getElementById("searchBox");
+    const emptyState = document.getElementById("emptyState");
+    const clientDetail = document.getElementById("clientDetailView");
+    const clientDetailName = document.getElementById("clientDetailName");
+    const clientDetailMeta = document.getElementById("clientDetailMeta");
+    const openSheetBtn = document.getElementById("openSheetBtn");
+    const configWarning = document.getElementById("configWarning");
+
+    let fullData = [];
+
+    function isConfigured() {
+      return (
+        CONFIG.API_ENDPOINT.startsWith("http") &&
+        CONFIG.RESPONSES_SHEET_URL.startsWith("http") &&
+        CONFIG.CREATE_CLIENT_FORM_URL.startsWith("http") &&
+        CONFIG.MARKETING_FORM_BASE.startsWith("http") &&
+        CONFIG.APPRAISAL_FORM_BASE.startsWith("http") &&
+        CONFIG.VENDOR_FORM_BASE.startsWith("http")
+      );
+    }
+
+    function showConfigWarningIfNeeded() {
+      if (!isConfigured()) configWarning.style.display = "block";
+      openSheetBtn.href = CONFIG.RESPONSES_SHEET_URL.startsWith("http") ? CONFIG.RESPONSES_SHEET_URL : "#";
+    }
+
+    async function loadClients() {
+      if (!CONFIG.API_ENDPOINT.startsWith("http")) return;
+
+      try {
+        const res = await fetch(CONFIG.API_ENDPOINT, { cache: "no-store" });
+        const json = await res.json();
+        fullData = json.data || [];
+        renderRows(fullData);
+      } catch (err) {
+        console.error("Error loading clients:", err);
+      }
+    }
+
+    function normalizeKeys(obj) {
+      const normalized = {};
+      Object.keys(obj || {}).forEach(k => normalized[String(k).trim().toLowerCase()] = obj[k]);
+      return normalized;
+    }
+
+    function renderRows(arr) {
+      const query = searchBox.value.toLowerCase().trim();
+      const filtered = (arr || []).filter(o =>
+        !query || Object.values(o).some(v => String(v || "").toLowerCase().includes(query))
+      );
+
+      tableBody.innerHTML = "";
+      if (!filtered.length) {
+        emptyState.style.display = "block";
+        return;
+      }
+      emptyState.style.display = "none";
+
+      filtered.forEach((o, i) => {
+        const normalized = normalizeKeys(o);
+
+        const nameField =
+          normalized["client name"] || normalized["agent 1 name"] || normalized["name"] || "(No Name)";
+        const email = normalized["email"] || "";
+        const phone = normalized["client phone number"] || normalized["agent 1 mobile"] || "";
+        const address = normalized["property address"] || "";
+        const notes = normalized["client company"] || normalized["notes"] || "";
+
+        const row = `
+          <tr>
+            <td>${normalized["timestamp"] || ""}</td>
+            <td><a href="#" class="client-link" data-index="${i}">${nameField}</a></td>
+            <td>${email}</td>
+            <td>${phone}</td>
+            <td>${address}</td>
+            <td>${notes}</td>
+          </tr>`;
+        tableBody.insertAdjacentHTML("beforeend", row);
+      });
+
+      document.querySelectorAll(".client-link").forEach(a => {
+        a.onclick = (e) => {
+          e.preventDefault();
+
+          const obj = filtered[a.dataset.index];
+          const normalized = normalizeKeys(obj);
+
+          clientDetail.style.display = "block";
+          document.getElementById("clientsView").style.display = "none";
+
+          clientDetailName.textContent =
+            normalized["client name"] || normalized["agent 1 name"] || "Client";
+
+          clientDetailMeta.textContent = [normalized["email"], normalized["client phone number"]]
+            .filter(Boolean)
+            .join(" • ");
+
+          // Property/Client ID for prefilling forms
+          const pid = normalized["propertyid"] || (crypto?.randomUUID ? crypto.randomUUID() : String(Date.now()));
+
+          const openForm = (baseUrl) => {
+            if (!baseUrl.startsWith("http")) return;
+            const url = baseUrl + encodeURIComponent(pid);
+            window.open(url, "_blank", "noreferrer");
+          };
+
+          document.getElementById("openMarketingFormBtn").onclick = () => openForm(CONFIG.MARKETING_FORM_BASE);
+          document.getElementById("openAppraisalFormBtn").onclick = () => openForm(CONFIG.APPRAISAL_FORM_BASE);
+          document.getElementById("openVendorFormBtn").onclick = () => openForm(CONFIG.VENDOR_FORM_BASE);
+        };
+      });
+    }
+
+    searchBox.addEventListener("input", () => renderRows(fullData));
+    document.getElementById("refreshBtn").onclick = () => { searchBox.value = ""; loadClients(); };
+    document.getElementById("backToListBtn").onclick = () => {
+      clientDetail.style.display = "none";
+      document.getElementById("clientsView").style.display = "block";
+    };
+
+    document.getElementById("createClientBtn").onclick = () => {
+      if (CONFIG.CREATE_CLIENT_FORM_URL.startsWith("http")) {
+        window.open(CONFIG.CREATE_CLIENT_FORM_URL, "_blank", "noreferrer");
+      }
+    };
+    showConfigWarningIfNeeded();
+    loadClients();
+  </script>
+</body>
+</html>
