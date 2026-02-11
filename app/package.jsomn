@@ -1,0 +1,25 @@
+{
+  "name": "marketing-pack-automation-portal",
+  "version": "1.0.0",
+  "description": "Client intake portal that launches a marketing materials pack workflow using a Node.js server and Google Forms/Sheets integration.",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "automation",
+    "google-forms",
+    "google-sheets",
+    "portal"
+  ],
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
