@@ -105,7 +105,7 @@ function onFormSubmit(e) {
     const currentId = sheet.getRange(row, propertyIdCol).getValue();
     if (!currentId) sheet.getRange(row, propertyIdCol).setValue(Utilities.getUuid());
 
-    Logger.log("🧾 Sheet detected: " + sheetName);
+    Logger.log(" Sheet detected: " + sheetName);
 
     if (sheetName === "MarketingPack") {
       Logger.log("Triggering marketing automation...");
@@ -130,13 +130,6 @@ function runMarketingAutomation_(e) {
     if (!e || !e.namedValues) throw new Error("Missing event payload (namedValues).");
 
     const inputs = readInputs_(e.namedValues);
-    // const ai = callAiContentGenerator_(inputs);
-    // const pack = ensureListingFolder_(inputs);
-
-    // const outSign = buildSlides_(inputs, ai, pack.folder);
-    // writeBackLink_(e, 'Generated Signboard Slides URL', outSign.url);
-
-    // ... flyer, tile, caption, folder link
 
     Logger.log(" Marketing automation finished (demo-safe skeleton).");
   } catch (err) {
@@ -206,7 +199,7 @@ function getNVByPrefix_(nv, prefix) {
 function readImageIdByPrefix_(nv, prefix) {
   const val = getNVByPrefix_(nv, prefix);
   if (!val) return "";
-  // Support patterns: /d/<id> or id=<id>
+
   const m = String(val).match(/\/d\/([a-zA-Z0-9_-]+)/) || String(val).match(/[?&]id=([a-zA-Z0-9_-]+)/);
   return m ? m[1] : "";
 }
