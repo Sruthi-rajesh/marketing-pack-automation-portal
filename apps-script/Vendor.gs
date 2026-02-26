@@ -18,9 +18,7 @@ function getVendorConfig_() {
   };
 }
 
-/* =======================================================
-   VENDOR REPORT AUTOMATION
-   ======================================================= */
+
 function runVendorAutomation_(e) {
   const CONFIG = getVendorConfig_();
   try {
@@ -53,7 +51,7 @@ function runVendorAutomation_(e) {
   }
 }
 
-/* ---------------------- Map Vendor Sheet + PropertyReport ---------------------- */
+
 function mapFormToInputsVendor_(e, CONFIG) {
   const nv = e.namedValues || {};
   const v  = (k) => (nv[k] && nv[k][0]) ? String(nv[k][0]).trim() : "";
@@ -75,7 +73,7 @@ function mapFormToInputsVendor_(e, CONFIG) {
     listingUrl: ""
   };
 
-  // Pull core listing fields from PropertyReport
+ 
   try {
     const prSheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("PropertyReport");
     if (!prSheet) throw new Error("Sheet 'PropertyReport' not found.");
@@ -142,13 +140,13 @@ function mapFormToInputsVendor_(e, CONFIG) {
   };
 }
 
-/* ---------------------- Generate Docs ---------------------- */
+
 function mergeIntoVendorDoc_(args, CONFIG) {
   const { templateId, title, inputs, ai, includeIssuesInVendor } = args;
 
   const parent = DriveApp.getFolderById(CONFIG.PROPERTY_ROOT_FOLDER_ID);
 
-  // Avoid leaking real addresses in public demos; keep folder naming generic if needed
+  
   const safeName = (inputs.property.address || "Property").replace(/[\\/:*?"<>|]+/g, " ");
   const folderName = `Vendor Report – ${safeName} – ${Utilities.formatDate(new Date(), CONFIG.TIMEZONE, "yyyy-MM-dd HHmm")}`;
 
@@ -159,14 +157,14 @@ function mergeIntoVendorDoc_(args, CONFIG) {
   const doc = DocumentApp.openById(copy.getId());
   const body = doc.getBody();
 
-  // Merge AI fields ({{key}} placeholders)
+  
   Object.keys(ai || {}).forEach(k => {
     const val = String(ai[k] || "");
     body.replaceText(escapeFindVendor_(`{{${k}}}`), val);
     body.replaceText(escapeFindVendor_(`{{${k.replace(/[^\w]+/g, "_")}}}`), val);
   });
 
-  // Merge fixed fields
+ 
   body.replaceText(escapeFindVendor_("{{PropertyID}}"), inputs.propertyId || "");
   body.replaceText(escapeFindVendor_("{{Property.Address}}"), inputs.property.address || "");
   body.replaceText(escapeFindVendor_("{{Property.Type}}"), inputs.property.propertyType || "");
@@ -190,7 +188,7 @@ function mergeIntoVendorDoc_(args, CONFIG) {
   return { docUrl: copy.getUrl(), pdfUrl: pdf.getUrl() };
 }
 
-/* ---------------------- AI Writer Call ---------------------- */
+
 function callVendorWriter_(payload, CONFIG) {
   const endpoint = CONFIG.VENDOR_WEBHOOK_URL;
   const headers = { "Content-Type": "application/json" };
@@ -216,7 +214,7 @@ function callVendorWriter_(payload, CONFIG) {
   return json.ai;
 }
 
-/* ---------------------- Helpers ---------------------- */
+
 function escapeFindVendor_(s){ return String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
 function toISODateVendor_(s,CONFIG){ if(!s) return ''; const d=new Date(s); return isNaN(d)?'':Utilities.formatDate(d,CONFIG.TIMEZONE,'yyyy-MM-dd'); }
 function toISODateTimeVendor_(s,CONFIG){ if(!s) return ''; const d=new Date(s); return isNaN(d)?'':Utilities.formatDate(d,CONFIG.TIMEZONE,"yyyy-MM-dd'T'HH:mm:ssXXX"); }
