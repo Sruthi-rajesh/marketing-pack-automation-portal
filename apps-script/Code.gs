@@ -9,7 +9,7 @@ function getConfig_() {
     OUTPUT_FOLDER_ID: props.getProperty("OUTPUT_FOLDER_ID") || "FOLDER_ID_HERE",
     MARKETING_WEBHOOK_URL: props.getProperty("MARKETING_WEBHOOK_URL") || "WEBHOOK_URL_HERE",
 
-    // Vendor (base form link)
+    
     VENDOR_FORM_BASE: props.getProperty("VENDOR_FORM_BASE") || "https://docs.google.com/forms/d/e/FORM_ID/viewform?usp=pp_url",
     VENDOR_ENTRY_ID: props.getProperty("VENDOR_ENTRY_ID") || "ENTRY_ID_HERE",
 
@@ -44,7 +44,7 @@ function doGet(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/***** ================== API: POST Create Property Record ================== *****/
+
 function doPost(e) {
   try {
     const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("PropertyReport");
@@ -84,7 +84,7 @@ function doPost(e) {
   }
 }
 
-/***** ================== MAIN TRIGGER ================== *****/
+
 function onFormSubmit(e) {
   try {
     if (!e || !e.range) throw new Error("Missing event object (e).");
@@ -101,7 +101,6 @@ function onFormSubmit(e) {
       return;
     }
 
-    // Ensure PropertyID exists for this submission row
     const row = e.range.getRow();
     const currentId = sheet.getRange(row, propertyIdCol).getValue();
     if (!currentId) sheet.getRange(row, propertyIdCol).setValue(Utilities.getUuid());
@@ -124,13 +123,7 @@ function onFormSubmit(e) {
   }
 }
 
-/***** ================== MARKETING AUTOMATION (Skeleton) ================== *****/
-/**
- * NOTE:
- * This file only keeps the orchestration shape.
- * Implementations like callAiContentGenerator_, buildSlides_, etc.
- * should be included in the repo if they contain no secrets.
- */
+
 function runMarketingAutomation_(e) {
   try {
     Logger.log(" Marketing automation started");
@@ -151,19 +144,19 @@ function runMarketingAutomation_(e) {
   }
 }
 
-/***** ================== INPUT READER ================== *****/
+
 function readInputs_(nv) {
   const propertyId = getNVByPrefix_(nv, "Property ID");
   const aiNotes = getNVByPrefix_(nv, "What makes this property stand out");
   const targetProfile = getNVByPrefix_(nv, "Target buyer");
 
-  // Image IDs extracted from uploaded Google Form file links (if applicable)
+  
   const heroId = readImageIdByPrefix_(nv, "Hero Image");
   const thumb1Id = readImageIdByPrefix_(nv, "Additional Image 1");
   const thumb2Id = readImageIdByPrefix_(nv, "Additional Image 2");
   const thumb3Id = readImageIdByPrefix_(nv, "Floor Plan");
 
-  // Look up listing details from PropertyReport
+ 
   let address = "", suburb = "", state = "", propertyType = "", saleOrLease = "", listingUrl = "";
   let buildingArea = "", siteArea = "";
   let agent1Name = "", agent1Mobile = "", agent2Name = "", agent2Mobile = "";
@@ -204,7 +197,7 @@ function readInputs_(nv) {
   };
 }
 
-/***** ================== SMALL HELPERS ================== *****/
+
 function getNVByPrefix_(nv, prefix) {
   const key = Object.keys(nv || {}).find(k => String(k).trim().startsWith(prefix));
   return key ? String(nv[key][0] || "").trim() : "";
